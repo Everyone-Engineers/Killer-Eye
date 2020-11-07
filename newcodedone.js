@@ -1,4 +1,4 @@
-//Variable for teachable machine model converted and stored
+//Variable for teachable machine model converted and stored/essentially the AI aspect of the machine
 var imageURL = 'https://teachablemachine.withgoogle.com/models/meX2zcuwY/';
 var network;
 function preload() {
@@ -15,7 +15,7 @@ function setup() {
 	reversevideo = ml5.flipImage(vid)
     classifier();
 }
-//label and background work
+//label and background work to provide response
 var label;
 function draw() {
      image(vid, 0, 0);
@@ -35,11 +35,11 @@ function gotResult(error, results) {
          console.error(error);
          return;
     }     
-	 if(results[0].confidence>0.69){
+	 if(results[0].confidence>0.95){
      label = results[0].label;
      }
      else{
-     label = "???";
+     label = "";
      }
      reversevideo.remove();
      classifier();
