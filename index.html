@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Killer Eye Image Model with Live Webcam Feed and Static Image Uploader</title>
+        <style>
+            table, th, td {
+                border: 0px;
+            }
+            body {
+                background-color:powderblue;
+            }
+        </style>
+    </head>
+    <body>
+        <table>
+            <tr>
+                <th>
+                    <a href="https://devpost.com/software/killer-eye" target="_blank"><div><b><h1>Killer Eye Image Classification Algorithm with Live Webcam Feed and Static Image Analyzer</h1></b></div></a>
+                </th>
+                <th>
+                    <a href="https://devpost.com/software/killer-eye" target="_blank"><img src="https://i.imgur.com/7cSi2WJ.png" style="cursor:pointer; height:200px;"/></a>
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    <div>November 2020 hackTAMS project by Samarth Kabbur, Emmanuel Roy, Samhith Komatreddy, Harish Jawahar.</div>
+                </td>
+            </tr>
+        </table>
+<button type="button" onclick="initWebcam()">Initialize Live Webcam Feed</button>
+<div id="webcam-container"></div>
+<b><div id="webcamlabel-container"></div></b>
+<br>
+<br>
+<img id="imagePreview" style="height: 300px;" />
+<img src="https://i.imgur.com/xQ3wjJr.png" id="upfile1" style="cursor:pointer; height:100px;"  />
+<input id="imageUpload" type="file" name="imageUpload" style="display:none"/>
+<b><div id="label-container"></div></b>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
+<script type="text/javascript">
+    const URL = "https://teachablemachine.withgoogle.com/models/d6YFs84n9/";
+    //globals
+    let webcammodel, webcam, webcamlabelContainer, webcammaxPredictions, model, labelContainer, maxPredictions;
+    //ALL WEBCAM CODE
+    // Load the image model and setup the webcam
+    async function initWebcam() { //fyi, async functions keep on running until the return 'promise' is fufilled. this is especially helpful for the loop function. 
+        const webcammodelURL = URL + "model.json";
+        const webcammetadataURL = URL + "metadata.json";
+        // load the model and metadata
+        webcammodel = await tmImage.load(webcammodelURL, webcammetadataURL);
+        webcammaxPredictions = webcammodel.getTotalClasses();
+        // Webcam setup
+        const flipcam = true; // whether to flip the webcam
+        webcamSize = 800;
+        webcam = new tmImage.Webcam(webcamSize, webcamSize, flipcam); // width, height, flip or not
+        await webcam.setup(); // request browser access to the webcam
+        await webcam.play();  // start webcam
+        window.requestAnimationFrame(webcamloop);
+        // append elements to the HTML DOM, so they can be accessed later. 
+        document.getElementById("webcam-container").appendChild(webcam.canvas);
+        webcamlabelContainer = document.getElementById("webcamlabel-container");
+        for (let i = 0; i < webcammaxPredictions; i++) { 
+            webcamlabelContainer.appendChild(document.createElement("div"));
+        }
+    }
+    async function webcamloop() {
+        webcam.update(); // update the webcam frame
+        await webcampredict();
+        window.requestAnimationFrame(webcamloop);
+    }
+    // run the webcam image through the image model
+    async function webcampredict() {
+        //webcam predict takes in the webcam frames and immediately processes them. 
+        const webcamprediction = await webcammodel.predict(webcam.canvas);
+        for (let i = 0; i < webcammaxPredictions; i++) {
+            const webcamclassPrediction = webcamprediction[i].className + ": " + webcamprediction[i].probability.toFixed(2);
+            if(webcamprediction[0].probability.toFixed(2) >= 0.8){
+                webcamlabelContainer.childNodes[i].innerHTML = "Live Result: Wilson's Positive";
+            break;
+        } else if(webcamprediction[0].probability.toFixed(2) < 0.8 && webcamprediction[1].probability.toFixed(2) >= 0.8){
+            webcamlabelContainer.childNodes[i].innerHTML = "Live Result: Wilson's Negative";
+            break; 
+        } else if (webcamprediction[2].probability.toFixed(2) >= 0.8){
+            webcamlabelContainer.childNodes[i].innerHTML = "Live Result: No Eye Detected";
+            break;
+        }
+    }
+        }
+    //ALL STATIC IMAGE CODE
+    // Load the image model again
+    async function init() {
+        const modelURL = URL + 'model.json';
+        const metadataURL = URL + 'metadata.json';
+        // load the metadata and model again
+        model = await tmImage.load(modelURL, metadataURL);
+        maxPredictions = model.getTotalClasses();
+        labelContainer = document.getElementById('label-container');
+        for (let i = 0; i < maxPredictions; i++) {
+            labelContainer.appendChild(document.createElement('div'));
+        }
+    }
+    async function predict() {
+    // predict takes in just the static image file. i didn't change the name because then i would also have to change it in the jquery resource. 
+    var image = document.getElementById('imagePreview');
+    const prediction = await model.predict(image, false);
+    for (let i = 0; i < maxPredictions; i++) {
+        const classPrediction = prediction[i].className + ': ' + prediction[i].probability.toFixed(2);
+        if(prediction[0].probability.toFixed(2) >= 0.8){
+            labelContainer.childNodes[i].innerHTML = "Live Result: Wilson's Positive";
+            break;
+        } else if(prediction[0].probability.toFixed(2) < 0.8 && prediction[1].probability.toFixed(2) >= 0.8){
+            labelContainer.childNodes[i].innerHTML = "Live Result: Wilson's Negative";
+            break; 
+        } else if (prediction[2].probability.toFixed(2) >= 0.8){
+            labelContainer.childNodes[i].innerHTML = "Live Result: No Eye Detected";
+            break;
+        }
+    }
+}
+</script>
+<!--JQUERY CODE-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script type="text/javascript">
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#imagePreview').attr('src', e.target.result);
+                $('#imagePreview').hide();
+                $('#imagePreview').fadeIn(650);
+            };
+            reader.readAsDataURL(input.files[0]);
+            init().then(() => {
+                predict();
+            });
+        }
+    }
+    $('#imageUpload').change(function () {
+        readURL(this);
+    });
+</script>
+<script>
+    $("#upfile1").click(function () {
+    $("#imageUpload").trigger('click');
+});
+</script>
+</body>
+<!--THANKS FOR WATCHING! THIS CODE WAS CREATED BY SAMARTH KABBUR. ML MODEL AND METADATA IS HOSTED ON GOOGLE SERVERS. -->
+<!--SOME CODE WAS INSPIRED BY SIMILAR OPEN-SOURCE GITHUB PROJECTS-->
+<!--MOST CODE MADE FROM SCRATCH BY ME-->
+<!--AS PART OF THE HACKTAMS PROJECT BY SAMARTH KABBUR, EMMANUEL ROY, SAMHITH KOMATREDDY, AND HARISH JAWAHAR-->
+<!--VISIT OUR DEVPOST: https://devpost.com/software/killer-eye HERE, OR BY CLICKING THE TITLE OR LOGO-->
+<!--END FILE-->
+</html>
