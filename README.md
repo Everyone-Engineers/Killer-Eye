@@ -1,1 +1,2 @@
 # hackTAMS2020
+Killer-eye is a program that can diagnose Wilson's Disease. Wilsons disease leads to a buildup of copper in the body which leads to organ failure. This program scans the patients eye and searches for a copper ring around the iris, which is a symptom of Wilsons disease. It uses p5js and tensorflow to put the webcam data through a nueral network. It then displays these results on a website using HTML and github, which effectively displays the data.
