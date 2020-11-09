@@ -1,4 +1,13 @@
-# hackTAMS2020
+# hackTAMS2020 
+This project won best beginner hack in the hackTAMS 2020 Hackathon, and around $2000 worth of prizes!
+## Devpost: https://devpost.com/software/killer-eye
+
+Our Roles:
+Samarth Kabbur: Main Developer
+Emmanuel Roy: Video and Initial Prototype
+Samhith Komatreddy: Host, Presentation, Website builder
+Harish Jawahar: Researcher, Video, Presentation.
+
 Inspiration:
 
 Over 20,000 people face organ or liver failure under Wilson's disease. Wilson's is an inherited disorder that leaves your body unable to dispose of copper, leading to a build-up that will kill by the time you're 40 years old. The saddest part is how statistically the people most affected by Wilson's are in rural areas are unable to afford a doctor's diagnosis, leaving them to essentially die in the cold.
