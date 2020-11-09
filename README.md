@@ -14,7 +14,10 @@ Over 20,000 people face organ or liver failure under Wilson's disease. Wilson's 
 
 What it does:
 
-Killer Eye gets a webcam or image input and then classifies each frame using TensorFlow. The website we created is essentially run in one giant HTML file with scripting in JavaScript in it. Our ML model is being kept on Google's server and is easily interchangeable if we need to upgrade ASAP.
+Killer Eye gets a webcam or image input and then classifies each frame using TensorFlow. The website we created is essentially run in one giant HTML file with scripting in JavaScript in it. Our ML model is being kept on an external server and is easily interchangeable if we need to upgrade ASAP.
+
+How it Works: 
+The algorithm was a generic ml algorithm that was repurposed and redesigned to be more lightweight and work for our usage. The algorithm was trained with 35 images of Kayser-Fleischer rings from patients with blue eyes, to create the Wilson's Positive classification. It was trained with 25 images of blue eyes without rings, to create the Wilson's Negative classification. Finally, it was trained with 50 random images to create the No Eye Detected classification. There was a total of 500 epochs. We uploaded the model to be hosted on an external server. Then, the website, which included HTML/CSS, JavaScript, and JQuery, was hosted on GitHub. The website was coded to accept a webcam or static image input, process it through the machine learning algorithm, and output a classification. The website only pulls the model once from the external server, then all processing occurs locally. Even though all processing happens locally, the program is extremely fast and accurate.
 
 How we built it:
 
@@ -35,3 +38,5 @@ We learned a ton about Wilson's and its impact on our community. When it comes t
 What's next for Killer Eye - Diagnosing Wilson's Disease.:
 
 We want to develop Killer Eye to the point it could classify Wilson's at the same level or better then an Ophthalmologist. Better models are needed in order to make our classification system more accurate, so we just need to gather more and better images. We also will focus on making our UI more usable for revision two.
+
+Please make sure to give us credit if you're using our code! Our code includes references to Google's Teachable Machine, and chris-chris
